@@ -29,4 +29,5 @@ android:
     - addon-google_apis-google-27
   
   before_install:
+    - chmod +x gradlew
     - ./gradlew dependencies || true
