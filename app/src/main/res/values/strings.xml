@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Facilitas</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configurações</string>
+    <string name="search">Buscar</string>
+    <string name="parcel">Encomendas</string>
+    <string name="product">Produtos</string>
+    <string name="client">Clientes</string>
+    <string name="action_update">Atualizar</string>
+    <string name="action_delete">Excluir</string>
+    <string name="title_dialog_new_parcel">Adicionar nova encomenda</string>
+    <string name="title_dialog_new_product">Adicionar novo produto</string>
+    <string name="title_dialog_update_parcel">Alterar encomenda</string>
 </resources>
