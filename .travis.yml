@@ -6,12 +6,13 @@ cache:
  -$HOME/.gradle/caches/
  -$HOME/.gradle/wrapper/
 
-before_script:
+sudo: required
+jdk: oraclejdk8
+
+before_install:
     - chmod +x gradlew
     - ./gradlew dependencies || true
 
-sudo: required
-jdk: oraclejdk8
 language: android
 android:
   components:
