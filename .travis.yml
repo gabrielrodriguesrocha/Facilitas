@@ -8,11 +8,6 @@ cache:
 
 sudo: required
 jdk: oraclejdk8
-
-before_install:
-    - chmod +x gradlew
-    - ./gradlew dependencies || true
-
 language: android
 android:
   components:
@@ -32,3 +27,7 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-27
+
+script:
+    - chmod +x ./gradlew build connectedCheck
+    - ./gradlew dependencies || true
