@@ -28,6 +28,5 @@ android:
     - extra-android-m2repository
     - addon-google_apis-google-27
 
-script:
-    - chmod +x ./gradlew build connectedCheck
-    - ./gradlew dependencies || true
+before_script:
+    - chmod +x ./gradlew
