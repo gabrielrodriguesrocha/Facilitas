@@ -97,7 +97,7 @@ class ParcelFragment : Fragment(){
     private fun displayCreateDialog() {
         val alert = AlertDialog.Builder(this.context)
         alert.setTitle(resources.getString(R.string.title_dialog_new_parcel))
-        val view = LayoutInflater.from(this@ParcelFragment.context).inflate(R.layout.view_dialog_input, R.layout.parcel_fragment)
+        val view = LayoutInflater.from(this@ParcelFragment.context).inflate(R.layout.view_dialog_input, null)
         val input = view.findViewById(R.id.text) as EditText
         alert.setView(view)
         alert.setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
