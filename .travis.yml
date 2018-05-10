@@ -6,6 +6,10 @@ cache:
  -$HOME/.gradle/caches/
  -$HOME/.gradle/wrapper/
 
+before_script:
+    - chmod +x gradlew
+    - ./gradlew dependencies || true
+
 sudo: required
 jdk: oraclejdk8
 language: android
@@ -27,7 +31,3 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-27
-  
-  before_install:
-    - chmod +x gradlew
-    - ./gradlew dependencies || true
