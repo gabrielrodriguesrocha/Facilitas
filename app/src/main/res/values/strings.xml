@@ -7,7 +7,8 @@
     <string name="client">Clientes</string>
     <string name="action_update">Atualizar</string>
     <string name="action_delete">Excluir</string>
-    <string name="title_dialog_new_parcel">Adicionar nova encomenda</string>
-    <string name="title_dialog_new_product">Adicionar novo produto</string>
-    <string name="title_dialog_update_parcel">Alterar encomenda</string>
+    <string name="title_dialog_new_parcel">Adicionar Encomenda</string>
+    <string name="title_dialog_new_product">Adicionar Produto</string>
+    <string name="title_dialog_update_parcel">Alterar Encomenda</string>
+    <string name="title_dialog_update_product">Alterar Produto</string>
 </resources>

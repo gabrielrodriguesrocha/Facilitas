@@ -6,22 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-
-import com.couchbase.lite.DataSource
-import com.couchbase.lite.Database
-import com.couchbase.lite.Expression
+import com.couchbase.lite.*
 import com.couchbase.lite.Function
-import com.couchbase.lite.Meta
-import com.couchbase.lite.Ordering
-import com.couchbase.lite.Query
-import com.couchbase.lite.QueryBuilder
-import com.couchbase.lite.SelectResult
 import com.couchbase.lite.internal.support.Log
-
 import java.util.HashMap
 
-class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
-    private var parcelsQuery: Query? = null
+class ProductAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
+    private var productsQuery: Query? = null
     private var incompTasksCountQuery: Query? = null
     private val incompCounts = HashMap<String, Int>()
 
@@ -29,8 +20,8 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
 
         if (db == null) throw IllegalArgumentException()
 
-        this.parcelsQuery = parcelsQuery()
-        this.parcelsQuery!!.addChangeListener { change ->
+        this.productsQuery = listsQuery()
+        this.productsQuery!!.addChangeListener { change ->
             clear()
             val rs = change.results
             for (result in rs) {
@@ -56,7 +47,7 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
         val id = getItem(position)
         val list = db!!.getDocument(id!!)
         if (mConvertView == null)
-            mConvertView = LayoutInflater.from(context).inflate(R.layout.view_parcel, parent, false)
+            mConvertView = LayoutInflater.from(context).inflate(R.layout.view_product, parent, false)
 
         val text = mConvertView!!.findViewById(R.id.text) as TextView
         text.text = list.getString("name")
@@ -73,10 +64,10 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
         return mConvertView
     }
 
-    private fun parcelsQuery(): Query {
+    private fun listsQuery(): Query {
         return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
-                .where(Expression.property("type").equalTo(Expression.string("parcel")))
+                .where(Expression.property("type").equalTo(Expression.string("product")))
                 .orderBy(Ordering.property("name").ascending())
     }
 
@@ -88,11 +79,11 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
         val srCount = SelectResult.expression(Function.count(Expression.all()))
         return QueryBuilder.select(srTaskListID, srCount)
                 .from(DataSource.database(db))
-                .where(exprType.equalTo(Expression.string("parcel")).and(exprComplete.equalTo(Expression.booleanValue(false))))
+                .where(exprType.equalTo(Expression.string("product")).and(exprComplete.equalTo(Expression.booleanValue(false))))
                 .groupBy(exprTaskListId)
     }
 
     companion object {
-        private val TAG = ParcelAdapter::class.java.simpleName
+        private val TAG = ProductAdapter::class.java.simpleName
     }
 }

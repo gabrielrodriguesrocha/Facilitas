@@ -23,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         val tabLayout = findViewById<View>(R.id.sliding_tabs) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.setOnClickListener({ Toast.makeText(applicationContext, (viewPager.adapter as CustomFragmentPagerAdapter).getPageTitle(tabLayout.selectedTabPosition), Toast.LENGTH_LONG).show() })
+        /*val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener({ displayCreateDialog() })*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

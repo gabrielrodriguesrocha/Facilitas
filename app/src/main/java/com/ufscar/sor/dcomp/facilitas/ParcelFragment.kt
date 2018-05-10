@@ -1,21 +1,16 @@
 package com.ufscar.sor.dcomp.facilitas
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.support.v4.app.Fragment
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.PopupMenu
-import android.app.Application
 import android.content.DialogInterface
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import android.support.design.widget.FloatingActionButton
 import android.view.MenuItem
-import android.widget.EditText
+import android.widget.*
 
 import com.couchbase.lite.CouchbaseLiteException
 import com.couchbase.lite.Database
@@ -28,10 +23,6 @@ import java.util.UUID
 
 // In this case, the fragment displays simple text based on the page
 class ParcelFragment : Fragment(){
-
-    private var listView: ListView? = null
-    private var adapter: ParcelAdapter? = null
-
     private var username: String? = null
     private var db: Database? = null
 
@@ -40,6 +31,8 @@ class ParcelFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPage = arguments!!.getInt(ARG_PAGE)
+
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -48,41 +41,46 @@ class ParcelFragment : Fragment(){
         val mApplication = activity!!.application as com.ufscar.sor.dcomp.facilitas.Application
         username = mApplication.getUsername()
         db = mApplication.getDatabase()
+
         if (db == null) throw IllegalArgumentException()
 
-        listView = inflater.inflate(R.layout.parcel_fragment, container, false) as ListView?
-        adapter = ParcelAdapter(activity!!, db)
-        listView = activity!!.findViewById<View>(R.id.list) as ListView?
-        // TODO Fix NullPointerException below
+        val fragmentView = inflater.inflate(R.layout.parcel_fragment, container, false)
+        val listView = fragmentView.findViewById(R.id.parcel_list) as ListView?
+        val adapter = ParcelAdapter(activity!!, db)
         listView!!.adapter = adapter
-        listView!!.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
-            val id = adapter!!.getItem(i)
+
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
+            val id = adapter.getItem(i)
             val list = db!!.getDocument(id)
             showParcelListView(list)
         }
-        listView!!.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, view, pos, _ ->
+
+        listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, view, pos, _ ->
             val popup = PopupMenu(this@ParcelFragment.context, view)
             popup.inflate(R.menu.parcel_item)
             popup.setOnMenuItemClickListener { item ->
-                val id = adapter!!.getItem(pos)
+                val id = adapter.getItem(pos)
                 val list = db!!.getDocument(id)
-                handleListPopupAction(item, list)
+                handleParcelPopupAction(item, list)
             }
             popup.show()
             true
         }
 
-        return listView!!
+        val button = fragmentView.findViewById(R.id.fab_parcel) as FloatingActionButton?
+        button!!.setOnClickListener({ displayCreateDialog() })
+
+        return fragmentView!!
     }
 
-    private fun handleListPopupAction(item: MenuItem, list: Document): Boolean {
+    private fun handleParcelPopupAction(item: MenuItem, list: Document): Boolean {
         when (item.itemId) {
             R.id.update -> {
-                displayUpdateListDialog(list)
+                displayUpdateDialog(list)
                 return true
             }
             R.id.delete -> {
-                deleteList(list)
+                deleteParcel(list)
                 return true
             }
             else -> return false
@@ -96,24 +94,24 @@ class ParcelFragment : Fragment(){
     }
 
     // display create list dialog
-    private fun displayCreateListDialog() {
+    private fun displayCreateDialog() {
         val alert = AlertDialog.Builder(this.context)
         alert.setTitle(resources.getString(R.string.title_dialog_new_parcel))
-        val view = LayoutInflater.from(this@ParcelFragment.context).inflate(R.layout.view_dialog_input, null)
+        val view = LayoutInflater.from(this@ParcelFragment.context).inflate(R.layout.view_dialog_input, R.layout.parcel_fragment)
         val input = view.findViewById(R.id.text) as EditText
         alert.setView(view)
         alert.setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
             val title = input.text.toString()
             if (title.isEmpty())
                 return@OnClickListener
-            createList(title)
+            createParcel(title)
         })
         alert.setNegativeButton("Cancel") { _, _ -> }
         alert.show()
     }
 
     // display update list dialog
-    private fun displayUpdateListDialog(list: Document) {
+    private fun displayUpdateDialog(list: Document) {
         val alert = AlertDialog.Builder(this.context)
         alert.setTitle(resources.getString(R.string.title_dialog_update_parcel))
         val input = EditText(this.context)
@@ -125,7 +123,7 @@ class ParcelFragment : Fragment(){
             val title = input.text.toString()
             if (title.isEmpty())
                 return@OnClickListener
-            updateList(list.toMutable(), title)
+            updateParcel(list.toMutable(), title)
         })
         alert.show()
     }
@@ -134,11 +132,11 @@ class ParcelFragment : Fragment(){
     // Database - CRUD
     // -------------------------
 
-    // create list
-    private fun createList(title: String): Document? {
+    // create parcel
+    private fun createParcel(title: String): Document? {
         val docId = username + "." + UUID.randomUUID()
         val mDoc = MutableDocument(docId)
-        mDoc.setString("type", "task-list")
+        mDoc.setString("type", "parcel")
         mDoc.setString("name", title)
         mDoc.setString("owner", username)
         try {
@@ -152,14 +150,14 @@ class ParcelFragment : Fragment(){
 
     }
 
-    // update list
-    private fun updateList(list: MutableDocument, title: String): Document? {
-        list.setString("name", title)
+    // update parcel
+    private fun updateParcel(parcel: MutableDocument, title: String): Document? {
+        parcel.setString("name", title)
         try {
-            db!!.save(list)
-            return db!!.getDocument(list.id)
+            db!!.save(parcel)
+            return db!!.getDocument(parcel.id)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to save the doc - %s", e, list)
+            Log.e(TAG, "Failed to save the doc - %s", e, parcel)
             //TODO: Error handling
             return null
         }
@@ -167,15 +165,15 @@ class ParcelFragment : Fragment(){
     }
 
     // delete list
-    private fun deleteList(list: Document): Document {
+    private fun deleteParcel(parcel: Document): Document {
         try {
-            db!!.delete(list)
+            db!!.delete(parcel)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to delete the doc - %s", e, list)
+            Log.e(TAG, "Failed to delete the doc - %s", e, parcel)
             //TODO: Error handling
         }
 
-        return list
+        return parcel
     }
 
     companion object {
