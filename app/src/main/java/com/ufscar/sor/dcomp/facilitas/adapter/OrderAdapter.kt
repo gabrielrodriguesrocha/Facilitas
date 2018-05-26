@@ -1,4 +1,4 @@
-package com.ufscar.sor.dcomp.facilitas
+package com.ufscar.sor.dcomp.facilitas.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -17,11 +17,12 @@ import com.couchbase.lite.Query
 import com.couchbase.lite.QueryBuilder
 import com.couchbase.lite.SelectResult
 import com.couchbase.lite.internal.support.Log
+import com.ufscar.sor.dcomp.facilitas.R
 
 import java.util.HashMap
 
-class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
-    private var parcelsQuery: Query? = null
+class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
+    private var ordersQuery: Query? = null
     private var incompTasksCountQuery: Query? = null
     private val incompCounts = HashMap<String, Int>()
 
@@ -29,8 +30,8 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
 
         if (db == null) throw IllegalArgumentException()
 
-        this.parcelsQuery = parcelsQuery()
-        this.parcelsQuery!!.addChangeListener { change ->
+        this.ordersQuery = parcelsQuery()
+        this.ordersQuery!!.addChangeListener { change ->
             clear()
             val rs = change.results
             for (result in rs) {
@@ -54,22 +55,22 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var mConvertView = convertView
         val id = getItem(position)
-        val list = db!!.getDocument(id!!)
+        val order = db!!.getDocument(id!!)
         if (mConvertView == null)
-            mConvertView = LayoutInflater.from(context).inflate(R.layout.view_parcel, parent, false)
+            mConvertView = LayoutInflater.from(context).inflate(R.layout.order_list_item, parent, false)
 
         val text = mConvertView!!.findViewById(R.id.text) as TextView
-        text.text = list.getString("name")
+        text.text = order.getString("name")
 
         /*
         val countText = mConvertView.findViewById(R.id.task_count)
-        if (incompCounts[list.id] != null) {
-            countText.setText((incompCounts[list.id] as Int).toString())
+        if (incompCounts[order.id] != null) {
+            countText.setText((incompCounts[order.id] as Int).toString())
         } else {
             countText.setText("")
         }*/
 
-        Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, list.id, list.getString("name"), list.getValue("name"), list.toMap())
+        Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, order.id, order.getString("name"), order.getValue("name"), order.toMap())
         return mConvertView
     }
 
@@ -93,6 +94,6 @@ class ParcelAdapter(context: Context, private val db: Database?) : ArrayAdapter<
     }
 
     companion object {
-        private val TAG = ParcelAdapter::class.java.simpleName
+        private val TAG = OrderAdapter::class.java.simpleName
     }
 }

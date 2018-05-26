@@ -1,27 +1,16 @@
 package com.ufscar.sor.dcomp.facilitas
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 //import android.support.test.InstrumentationRegistry.getArguments
-import android.support.v4.view.ViewPager
-import android.support.design.widget.TabLayout
-import android.view.*
-import android.app.SearchManager
 import android.content.Intent
 import com.couchbase.lite.Database
 import com.couchbase.lite.DatabaseConfiguration
-import com.couchbase.lite.MutableDocument
 import com.couchbase.lite.ReplicatorChange
 import com.couchbase.lite.ReplicatorChangeListener
 import com.couchbase.lite.Replicator
 import com.couchbase.lite.ReplicatorConfiguration
 import com.couchbase.lite.URLEndpoint
-import android.os.AsyncTask.execute
 import android.os.Handler
 import android.widget.Toast
-import com.couchbase.lite.DataSource.database
-import com.couchbase.lite.SelectResult
-import com.couchbase.lite.QueryBuilder
 import com.couchbase.lite.BasicAuthenticator
 import com.couchbase.lite.CouchbaseLiteException
 import com.couchbase.lite.internal.support.Log
@@ -29,6 +18,7 @@ import java.net.URI
 import java.net.URISyntaxException
 
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import com.ufscar.sor.dcomp.facilitas.activity.MainActivity
 
 class Application : android.app.Application(), ReplicatorChangeListener {
 
@@ -42,7 +32,7 @@ class Application : android.app.Application(), ReplicatorChangeListener {
     override fun onCreate() {
         super.onCreate()
 
-        startSession(DATABASE_NAME, null)
+        startSession("test", "test")
     }
 
     override fun onTerminate() {

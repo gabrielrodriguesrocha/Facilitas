@@ -1,12 +1,14 @@
-package com.ufscar.sor.dcomp.facilitas
+package com.ufscar.sor.dcomp.facilitas.activity
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v4.view.ViewPager
 import android.support.design.widget.TabLayout
 import android.view.*
-import android.widget.Toast
+import android.widget.LinearLayout
+import com.ufscar.sor.dcomp.facilitas.R
+import com.ufscar.sor.dcomp.facilitas.adapter.CustomFragmentPagerAdapter
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,9 +24,6 @@ class MainActivity : AppCompatActivity() {
         // Give the TabLayout the ViewPager
         val tabLayout = findViewById<View>(R.id.sliding_tabs) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
-
-        /*val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.setOnClickListener({ displayCreateDialog() })*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -34,5 +33,4 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-
 }

@@ -1,9 +1,12 @@
-package com.ufscar.sor.dcomp.facilitas
+package com.ufscar.sor.dcomp.facilitas.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.content.Context
 import android.support.v4.app.FragmentPagerAdapter
+import com.ufscar.sor.dcomp.facilitas.fragment.ClientFragment
+import com.ufscar.sor.dcomp.facilitas.fragment.OrderFragment
+import com.ufscar.sor.dcomp.facilitas.fragment.ProductFragment
 
 
 class CustomFragmentPagerAdapter(fm: FragmentManager, private val context: Context) : FragmentPagerAdapter(fm) {
@@ -16,10 +19,10 @@ class CustomFragmentPagerAdapter(fm: FragmentManager, private val context: Conte
 
     override fun getItem(position: Int): Fragment? {
         when(position) {
-            0 -> return ParcelFragment.newInstance(position)
+            0 -> return OrderFragment.newInstance(position)
             1 -> return ProductFragment.newInstance(position)
             2 -> return ClientFragment.newInstance(position)
-            else -> return ParcelFragment.newInstance(position)
+            else -> return OrderFragment.newInstance(position)
         }
     }
 

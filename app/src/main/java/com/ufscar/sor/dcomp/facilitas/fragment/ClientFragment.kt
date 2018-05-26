@@ -1,17 +1,13 @@
-package com.ufscar.sor.dcomp.facilitas
+package com.ufscar.sor.dcomp.facilitas.fragment
 
 import android.annotation.SuppressLint
-import android.app.SearchManager
-import android.content.Intent
 import android.widget.TextView
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.support.v4.app.Fragment
 import android.view.View
-import android.content.Intent.getIntent
-
-
+import com.ufscar.sor.dcomp.facilitas.R
 
 
 // In this case, the fragment displays simple text based on the page
@@ -27,10 +23,10 @@ class ClientFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.fragment_page, container, false)
-        val textView = view as TextView
+        val fragmentView = inflater.inflate(R.layout.client_fragment, container, false)
+        val textView = fragmentView.findViewById<TextView>(R.id.text)
         textView.text = getString(R.string.client)
-        return view
+        return fragmentView
     }
 
     companion object {

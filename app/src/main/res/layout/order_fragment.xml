@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_parcel"
+        android:id="@+id/fab_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -22,7 +22,7 @@
         app:srcCompat="@drawable/ic_create_new_folder_white_24dp" />
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/parcel_list"
+        android:id="@+id/order_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"/>

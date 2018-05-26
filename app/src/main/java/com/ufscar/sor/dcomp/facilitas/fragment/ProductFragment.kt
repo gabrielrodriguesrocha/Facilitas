@@ -1,4 +1,4 @@
-package com.ufscar.sor.dcomp.facilitas
+package com.ufscar.sor.dcomp.facilitas.fragment
 
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -16,6 +16,10 @@ import com.couchbase.lite.Database
 import com.couchbase.lite.Document
 import com.couchbase.lite.MutableDocument
 import com.couchbase.lite.internal.support.Log
+import com.ufscar.sor.dcomp.facilitas.Application
+import com.ufscar.sor.dcomp.facilitas.activity.ProductDetailActivity
+import com.ufscar.sor.dcomp.facilitas.R
+import com.ufscar.sor.dcomp.facilitas.adapter.ProductAdapter
 import java.util.*
 
 
@@ -34,7 +38,7 @@ class ProductFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val mApplication = activity!!.application as com.ufscar.sor.dcomp.facilitas.Application
+        val mApplication = activity!!.application as Application
         username = mApplication.getUsername()
         db = mApplication.getDatabase()
         if (db == null) throw IllegalArgumentException()
@@ -85,7 +89,7 @@ class ProductFragment : Fragment() {
 
     private fun showProductListView(list: Document) {
         val intent = Intent(this.context, ProductDetailActivity::class.java)
-        intent.putExtra(ParcelFragment.INTENT_LIST_ID, list.id)
+        intent.putExtra(OrderFragment.INTENT_ORDER_ID, list.id)
         startActivity(intent)
     }
 
@@ -94,7 +98,7 @@ class ProductFragment : Fragment() {
         val alert = AlertDialog.Builder(this.context)
         alert.setTitle(resources.getString(R.string.title_dialog_new_product))
         val view = LayoutInflater.from(this@ProductFragment.context).inflate(R.layout.view_dialog_input, null)
-        val input = view.findViewById(R.id.text) as EditText
+        val input = view.findViewById(R.id.product) as EditText
         alert.setView(view)
         alert.setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
             val title = input.text.toString()
@@ -132,7 +136,7 @@ class ProductFragment : Fragment() {
     private fun createProduct(title: String): Document? {
         val docId = username + "." + UUID.randomUUID()
         val mDoc = MutableDocument(docId)
-        mDoc.setString("type", "task-list")
+        mDoc.setString("type", "product")
         mDoc.setString("name", title)
         mDoc.setString("owner", username)
         try {
