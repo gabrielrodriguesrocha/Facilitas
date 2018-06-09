@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:orientation="horizontal" >
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="4dp">
     <AutoCompleteTextView
         android:id="@+id/product"
         android:layout_width="0dp"
@@ -10,18 +11,22 @@
         android:layout_weight="5"
         android:inputType="text"
         android:importantForAutofill="no" />
-    <Spinner
-        android:id="@+id/type_spinner"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:entries="@array/quantity"
-        android:gravity="end" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="1"
+        android:hint="1.5"
+        android:inputType="numberDecimal"
+        />
+
     <Button
         android:id="@+id/delete_button"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_weight="1"
-        android:background="@android:drawable/ic_delete"
-        android:onClick="onDeleteField"/>
+        android:background="@drawable/ic_delete_black_24dp"
+        android:onClick="onDeleteField" />
 </LinearLayout>

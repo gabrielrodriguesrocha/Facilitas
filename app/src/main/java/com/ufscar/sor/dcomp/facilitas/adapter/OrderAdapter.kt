@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.TextView
 
 import com.couchbase.lite.DataSource
@@ -18,8 +19,8 @@ import com.couchbase.lite.QueryBuilder
 import com.couchbase.lite.SelectResult
 import com.couchbase.lite.internal.support.Log
 import com.ufscar.sor.dcomp.facilitas.R
-
-import java.util.HashMap
+import java.text.SimpleDateFormat
+import java.util.*
 
 class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
     private var ordersQuery: Query? = null
@@ -30,7 +31,7 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
 
         if (db == null) throw IllegalArgumentException()
 
-        this.ordersQuery = parcelsQuery()
+        this.ordersQuery = ordersQuery()
         this.ordersQuery!!.addChangeListener { change ->
             clear()
             val rs = change.results
@@ -60,7 +61,25 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
             mConvertView = LayoutInflater.from(context).inflate(R.layout.order_list_item, parent, false)
 
         val text = mConvertView!!.findViewById(R.id.text) as TextView
-        text.text = order.getString("name")
+        text.text = order.getString("client")
+
+        val date = mConvertView!!.findViewById(R.id.date) as TextView
+        // TODO change to get date
+        val df = SimpleDateFormat("dd/MM", Locale.ENGLISH)
+        date.text = df.format(order.getDate("deliveryDate"))
+
+
+        val paid = mConvertView!!.findViewById(R.id.paid) as CheckBox
+        paid.isChecked = order.getBoolean("paid")
+        paid.setOnClickListener {
+            _ -> db!!.save(order.toMutable().setBoolean("paid", paid.isChecked))
+        }
+
+        val delivered = mConvertView!!.findViewById(R.id.delivered) as CheckBox
+        delivered.isChecked = order.getBoolean("delivered")
+        delivered.setOnClickListener {
+            _ -> db!!.save(order.toMutable().setBoolean("delivered", delivered.isChecked))
+        }
 
         /*
         val countText = mConvertView.findViewById(R.id.task_count)
@@ -74,10 +93,10 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
         return mConvertView
     }
 
-    private fun parcelsQuery(): Query {
+    private fun ordersQuery(): Query {
         return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
-                .where(Expression.property("type").equalTo(Expression.string("parcel")))
+                .where(Expression.property("type").equalTo(Expression.string("order")))
                 .orderBy(Ordering.property("name").ascending())
     }
 

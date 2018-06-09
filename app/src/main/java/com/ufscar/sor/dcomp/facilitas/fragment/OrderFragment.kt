@@ -26,7 +26,6 @@ import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
         Log.i(TAG, "Date changed!")
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private var username: String? = null
@@ -39,29 +38,22 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPage = arguments!!.getInt(ARG_PAGE)
-
+        orderCRUD = (activity!!.application as Application).getCrud()
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-        val mApplication = activity!!.application as Application
-        username = mApplication.getUsername()
-        db = mApplication.getDatabase()
-
-        if (db == null) throw IllegalArgumentException()
-
-        orderCRUD = DatabaseCRUD(username!!, db!!)
-
         val fragmentView = inflater.inflate(R.layout.order_fragment, container, false)
         val listView = fragmentView.findViewById(R.id.order_list) as ListView?
-        val adapter = OrderAdapter(activity!!, db)
+        val adapter = OrderAdapter(activity!!, orderCRUD!!.db)
         listView!!.adapter = adapter
+        listView.itemsCanFocus = true
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             val id = adapter.getItem(i)
-            val list = db!!.getDocument(id)
+            val list = orderCRUD!!.readOrder(id) ?: throw IllegalArgumentException()
             showOrderDetail(list)
         }
 
@@ -70,8 +62,8 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             popup.inflate(R.menu.parcel_item)
             popup.setOnMenuItemClickListener { item ->
                 val id = adapter.getItem(pos)
-                val list = db!!.getDocument(id)
-                handleParcelPopupAction(item, list)
+                val order = orderCRUD!!.readOrder(id) ?: throw IllegalArgumentException()
+                handleOrderPopupAction(item, order)
             }
             popup.show()
             true
@@ -83,17 +75,17 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         return fragmentView
     }
 
-    private fun handleParcelPopupAction(item: MenuItem, order: Document): Boolean {
-        when (item.itemId) {
+    private fun handleOrderPopupAction(item: MenuItem, order: Document): Boolean {
+        return when (item.itemId) {
             R.id.update -> {
                 displayUpdateDialog(order)
-                return true
+                true
             }
             R.id.delete -> {
-                orderCRUD!!.deleteOrder(order)
-                return true
+                orderCRUD!!.deleteProduct(order)
+                true
             }
-            else -> return false
+            else -> false
         }
     }
 

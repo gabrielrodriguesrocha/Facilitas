@@ -1,11 +1,10 @@
 package com.ufscar.sor.dcomp.facilitas.util
 
 import android.app.Application
-import com.couchbase.lite.CouchbaseLiteException
-import com.couchbase.lite.Database
-import com.couchbase.lite.Document
-import com.couchbase.lite.MutableDocument
+import com.couchbase.lite.*
+import com.couchbase.lite.Array
 import com.couchbase.lite.internal.support.Log
+import com.couchbase.litecore.fleece.MArray
 import java.util.*
 
 // -------------------------
@@ -39,12 +38,17 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
     // -------------------------
 
     // create order
-    fun createOrder(title: String): Document? {
+    fun createOrder(title: String, deliveryDate: Date, products: MutableDictionary): Document? {
         val docId = username + "." + UUID.randomUUID()
         val mDoc = MutableDocument(docId)
-        mDoc.setString("type", "parcel")
-        mDoc.setString("name", title)
+        mDoc.setString("type", "order")
+        mDoc.setString("client", title)
         mDoc.setString("owner", username)
+        mDoc.setDate("deliveryDate", deliveryDate)
+        mDoc.setBoolean("delivered", false)
+        mDoc.setBoolean("paid", false)
+        // TODO change to join
+        mDoc.setDictionary("products", products)
         try {
             db.save(mDoc)
             return db.getDocument(mDoc.id)
@@ -99,25 +103,39 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
     // -------------------------
 
     // create product
-    private fun createProduct(title: String): Document? {
+    fun createProduct(name: String, price: Double, category: String?): Document? {
         val docId = username + "." + UUID.randomUUID()
         val mDoc = MutableDocument(docId)
         mDoc.setString("type", "product")
-        mDoc.setString("name", title)
+        mDoc.setString("name", name)
         mDoc.setString("owner", username)
-        try {
+        mDoc.setDouble("price", price)
+        mDoc.setString("category", category)
+        return try {
             db.save(mDoc)
-            return db.getDocument(mDoc.id)
+            db.getDocument(mDoc.id)
         } catch (e: CouchbaseLiteException) {
             Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
             //TODO: Error handling
-            return null
+            null
         }
 
     }
 
+    // read product
+    fun readProduct(id: String): Document? {
+        try {
+            return db.getDocument(id)
+        }
+        catch (e: CouchbaseLiteException) {
+            Log.e(TAG, "Failed to retrieve the doc - %s", e, id)
+            //TODO: Error handling
+            return null
+        }
+    }
+
     // update product
-    private fun updateProduct(parcel: MutableDocument, title: String): Document? {
+    fun updateProduct(parcel: MutableDocument, title: String): Document? {
         parcel.setString("name", title)
         try {
             db.save(parcel)
@@ -131,7 +149,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
     }
 
     // delete product
-    private fun deleteProduct(parcel: Document): Document {
+    fun deleteProduct(parcel: Document): Document {
         try {
             db.delete(parcel)
         } catch (e: CouchbaseLiteException) {

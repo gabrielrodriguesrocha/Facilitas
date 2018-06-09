@@ -25,7 +25,7 @@ class ClientFragment : Fragment() {
                               savedInstanceState: Bundle?): View {
         val fragmentView = inflater.inflate(R.layout.client_fragment, container, false)
         val textView = fragmentView.findViewById<TextView>(R.id.text)
-        textView.text = getString(R.string.client)
+        textView.text = getString(R.string.clients)
         return fragmentView
     }
 

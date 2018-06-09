@@ -19,6 +19,7 @@ import java.net.URISyntaxException
 
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.ufscar.sor.dcomp.facilitas.activity.MainActivity
+import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 
 class Application : android.app.Application(), ReplicatorChangeListener {
 
@@ -26,13 +27,15 @@ class Application : android.app.Application(), ReplicatorChangeListener {
     private var replicator: Replicator? = null
     private var username: String? = DATABASE_NAME
 
+    private var databaseCRUD: DatabaseCRUD? = null
+
     private val backup: Database? = null
     private val backupReplicator: Replicator? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        startSession("test", "test")
+        startSession("test", "123456")
     }
 
     override fun onTerminate() {
@@ -48,6 +51,10 @@ class Application : android.app.Application(), ReplicatorChangeListener {
         return username
     }
 
+    fun getCrud(): DatabaseCRUD? {
+        return databaseCRUD
+    }
+
     // -------------------------
     // Session/Login/Logout
     // -------------------------
@@ -55,6 +62,7 @@ class Application : android.app.Application(), ReplicatorChangeListener {
         openDatabase(username)
         this.username = username
         startReplication(username, password)
+        databaseCRUD = DatabaseCRUD(username, database!!)
 
         //localBackup(username)
 

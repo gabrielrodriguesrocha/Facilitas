@@ -43,7 +43,9 @@ class ProductAdapter(context: Context, private val db: Database?) : ArrayAdapter
             mConvertView = LayoutInflater.from(context).inflate(R.layout.product_list_item, parent, false)
 
         val text = mConvertView!!.findViewById(R.id.text) as TextView
+        val price = mConvertView.findViewById(R.id.price) as TextView
         text.text = product.getString("name")
+        price.text = context.resources.getString(R.string.priceAmount, product.getDouble("price"))
 
         Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, product.id, product.getString("name"), product.getValue("name"), product.toMap())
         return mConvertView
