@@ -1,10 +1,7 @@
 package com.ufscar.sor.dcomp.facilitas.util
 
-import android.app.Application
 import com.couchbase.lite.*
-import com.couchbase.lite.Array
 import com.couchbase.lite.internal.support.Log
-import com.couchbase.litecore.fleece.MArray
 import java.util.*
 
 // -------------------------
@@ -135,29 +132,34 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
     }
 
     // update product
-    fun updateProduct(parcel: MutableDocument, title: String): Document? {
-        parcel.setString("name", title)
-        try {
-            db.save(parcel)
-            return db.getDocument(parcel.id)
+    fun updateProduct(id: String, name: String, price: Double, category: String?): Document? {
+        val mDoc = MutableDocument(id)
+        mDoc.setString("type", "product")
+        mDoc.setString("name", name)
+        mDoc.setString("owner", username)
+        mDoc.setDouble("price", price)
+        mDoc.setString("category", category)
+        return try {
+            db.save(mDoc)
+            db.getDocument(mDoc.id)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to save the doc - %s", e, parcel)
+            Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
             //TODO: Error handling
-            return null
+            null
         }
 
     }
 
     // delete product
-    fun deleteProduct(parcel: Document): Document {
+    fun deleteProduct(product: Document): Document {
         try {
-            db.delete(parcel)
+            db.delete(product)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to delete the doc - %s", e, parcel)
+            Log.e(TAG, "Failed to delete the doc - %s", e, product)
             //TODO: Error handling
         }
 
-        return parcel
+        return product
     }
 
     companion object {

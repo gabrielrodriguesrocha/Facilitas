@@ -32,6 +32,10 @@ class InputProductActivity : AppCompatActivity() {
             name.text = product.getString("name")
             price.text = product.getDouble("price").toString()
             category.text = product.getString("category")
+            addButton.setOnClickListener{ v -> onUpdateProduct(v, intent.getStringExtra(ProductFragment.INTENT_PRODUCT_ID)) }
+        }
+        else {
+            addButton.setOnClickListener{ v -> onAddProduct(v)}
         }
     }
 
@@ -40,6 +44,14 @@ class InputProductActivity : AppCompatActivity() {
         val price = findViewById<TextView>(R.id.price)
         val category = findViewById<TextView>(R.id.category)
         productCRUD!!.createProduct(name.text.toString(), price.text.toString().toDouble(), category.text.toString())
+        finish()
+    }
+
+    fun onUpdateProduct(v: View, id: String) {
+        val name = findViewById<TextView>(R.id.name)
+        val price = findViewById<TextView>(R.id.price)
+        val category = findViewById<TextView>(R.id.category)
+        productCRUD!!.updateProduct(id, name.text.toString(), price.text.toString().toDouble(), category.text.toString())
         finish()
     }
 

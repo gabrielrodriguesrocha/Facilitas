@@ -46,7 +46,7 @@ class ProductFragment : Fragment() {
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             val id = adapter.getItem(i)
-            val list = db!!.getDocument(id)
+            val list = productCRUD!!.readProduct(id) ?: throw IllegalArgumentException()
             showProductDetail(list)
         }
 
@@ -84,7 +84,7 @@ class ProductFragment : Fragment() {
 
     private fun showProductDetail(product: Document) {
         val intent = Intent(this.context, ProductDetailActivity::class.java)
-        intent.putExtra(OrderFragment.INTENT_ORDER_ID, product.id)
+        intent.putExtra(ProductFragment.INTENT_PRODUCT_ID, product.id)
         startActivity(intent)
     }
 

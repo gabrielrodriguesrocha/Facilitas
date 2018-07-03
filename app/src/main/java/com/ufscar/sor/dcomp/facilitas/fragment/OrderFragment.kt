@@ -53,8 +53,8 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             val id = adapter.getItem(i)
-            val list = orderCRUD!!.readOrder(id) ?: throw IllegalArgumentException()
-            showOrderDetail(list)
+            val order = orderCRUD!!.readOrder(id) ?: throw IllegalArgumentException()
+            showOrderDetail(order)
         }
 
         listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, view, pos, _ ->
