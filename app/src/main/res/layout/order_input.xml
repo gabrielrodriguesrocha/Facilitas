@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -23,6 +24,7 @@
         android:maxLines="1" />
 
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -42,7 +44,7 @@
             android:layout_marginRight="16dp"
             android:gravity="end"
             android:text="@string/quantity"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -85,20 +87,22 @@
     </ScrollView>
 
     <Button
+        style="@style/AppTheme.RoundedCornerMaterialButtonProduto"
         android:id="@+id/add_field_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@android:color/holo_blue_dark"
         android:drawableStart="@drawable/ic_add_white_24dp"
         android:onClick="onAddField"
         android:padding="5dp"
         android:text="@string/product"
+        android:layout_marginBottom="20dp"
         android:textColor="@android:color/white" />
 
     <TextView
+        android:layout_marginStart="140dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -107,6 +111,7 @@
         android:textSize="24sp" />
 
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -116,6 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_marginStart="80dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:drawableStart="@drawable/ic_date_range_black_24dp"
@@ -127,6 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_marginStart="40dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:drawableStart="@drawable/ic_access_time_black_24dp"
@@ -139,26 +146,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="50dp"
         android:gravity="center|bottom">
 
         <Button
-            android:id="@+id/add_order"
+            android:id="@+id/cancel_order"
+            style="@style/AppTheme.RoundedCornerMaterialButtonCancelar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="12dp"
-            android:background="@android:color/holo_green_light"
-            android:onClick="onAddOrder"
-            android:text="OK"
+            android:onClick="onCancelOrder"
+            android:layout_marginEnd="40dp"
+            android:text="Cancelar"
             android:textColor="@android:color/white" />
 
         <Button
-            android:id="@+id/cancel_order"
+            android:id="@+id/add_order"
+            style="@style/AppTheme.RoundedCornerMaterialButtonOK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_light"
-            android:onClick="onCancelOrder"
-            android:text="Cancelar"
+            android:layout_gravity="center"
+            android:onClick="onAddOrder"
+            android:text="OK"
             android:textColor="@android:color/white" />
     </LinearLayout>
 
