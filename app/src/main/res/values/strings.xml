@@ -21,11 +21,10 @@
     <string name="delivery">Entrega</string>
     <string name="day">Dia</string>
     <string name="time">Horário</string>
-    <string name="priceAmount">R\$ %1$.2f</string>
+    <string name="priceAmount">R\$ %1$.2lf</string>
     <string name="add_product">Adicionar Produto</string>
-    <string-array name="quantity">
-        <item>1</item>
-        <item>10</item>
-        <item>100</item>
-    </string-array>
+
+    <string name="auth_code_signin_button">Sign in with Auth Code Flow</string>
+
+    <string name="server_client_id">118833900567-snpjovf38167e4e3hcb129ch5817onlf.apps.googleusercontent.com</string>
 </resources>

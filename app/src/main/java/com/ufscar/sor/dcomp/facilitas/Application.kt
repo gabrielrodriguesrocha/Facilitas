@@ -165,6 +165,6 @@ class Application : android.app.Application(), ReplicatorChangeListener {
         private val SYNC_ENABLED = true
 
         private val DATABASE_NAME = "db"
-        private val SYNCGATEWAY_URL = "ws://192.168.25.23:4984/db/"
+        private val SYNCGATEWAY_URL = "ws://ec2-18-231-187-36.sa-east-1.compute.amazonaws.com:4984/db/"
     }
 }

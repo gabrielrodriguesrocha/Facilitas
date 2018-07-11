@@ -1,3 +1,3 @@
 package com.ufscar.sor.dcomp.facilitas.activity
 
-class ConfigActivity
+class LoginActivity
