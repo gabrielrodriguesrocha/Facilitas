@@ -90,7 +90,7 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
         fieldLinearLayout!!.removeView(v.parent as View)
     }
 
-    fun onAddOrder() {
+    fun onAddOrder(v: View) {
         val client = findViewById<EditText>(R.id.client)
         val products = (0..(fieldLinearLayout!!.childCount-1))
                                     .map { fieldLinearLayout!!.getChildAt(it) }
