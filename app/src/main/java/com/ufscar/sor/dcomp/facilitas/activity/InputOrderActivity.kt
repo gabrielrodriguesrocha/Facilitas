@@ -12,13 +12,10 @@ import java.util.*
 import android.view.LayoutInflater
 import android.widget.*
 import com.couchbase.lite.*
-import com.couchbase.lite.Array
 import com.ufscar.sor.dcomp.facilitas.Application
 import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 import java.util.Calendar.*
-import com.couchbase.litecore.fleece.MArray
 import com.ufscar.sor.dcomp.facilitas.adapter.AutocompleteProductAdapter
-import java.util.Dictionary
 
 
 class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
@@ -93,12 +90,12 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
         fieldLinearLayout!!.removeView(v.parent as View)
     }
 
-    fun onAddOrder(v: View) {
+    fun onAddOrder() {
         val client = findViewById<EditText>(R.id.client)
         val products = (0..(fieldLinearLayout!!.childCount-1))
                                     .map { fieldLinearLayout!!.getChildAt(it) }
                                     /*.map { it.findViewById<AutoCompleteTextView>(R.id.product).tag; it.findViewById<AutoCompleteTextView>(R.id.amount) }*/
-        products.forEach({ it -> productIDs[it.findViewById<AutoCompleteTextView>(R.id.product).tag as String] = it.findViewById<TextView>(R.id.amount).text.toString().toInt() })
+        products.forEach { it -> productIDs[it.findViewById<AutoCompleteTextView>(R.id.product).tag as String] = it.findViewById<TextView>(R.id.amount).text.toString().toInt() }
         /*val products = productIDs!!.map {orderCRUD!!.readProduct(it) }*/
         val calendar = Calendar.getInstance()
         calendar.timeZone = TimeZone.getTimeZone("BRT")

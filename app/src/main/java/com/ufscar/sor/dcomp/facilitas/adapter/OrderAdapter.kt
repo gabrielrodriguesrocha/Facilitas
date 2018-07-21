@@ -4,14 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.CheckBox
-import android.widget.TextView
+import android.widget.*
 
 import com.couchbase.lite.DataSource
 import com.couchbase.lite.Database
 import com.couchbase.lite.Expression
-import com.couchbase.lite.Function
 import com.couchbase.lite.Meta
 import com.couchbase.lite.Ordering
 import com.couchbase.lite.Query
@@ -21,11 +18,16 @@ import com.couchbase.lite.internal.support.Log
 import com.ufscar.sor.dcomp.facilitas.R
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
+
+class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0), Filterable {
     private var ordersQuery: Query? = null
     private var incompTasksCountQuery: Query? = null
     private val incompCounts = HashMap<String, Int>()
+
+    private var arrayList: ArrayList<String>? = ArrayList()
+    private var mOriginalValues: ArrayList<String>? = null // Original Values
 
     init {
 
@@ -37,17 +39,6 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
             val rs = change.results
             for (result in rs) {
                 add(result.getString(0))
-            }
-            notifyDataSetChanged()
-        }
-
-        this.incompTasksCountQuery = incompTasksCountQuery()
-        this.incompTasksCountQuery!!.addChangeListener { change ->
-            incompCounts.clear()
-            val rs = change.results
-            for (result in rs) {
-                Log.e(TAG, "result -> " + result.toMap())
-                incompCounts[result.getString(0)] = result.getInt(1)
             }
             notifyDataSetChanged()
         }
@@ -63,31 +54,24 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
         val text = mConvertView!!.findViewById(R.id.text) as TextView
         text.text = order.getString("client")
 
-        val date = mConvertView!!.findViewById(R.id.date) as TextView
+        val date = mConvertView.findViewById(R.id.date) as TextView
         // TODO change to get date
         val df = SimpleDateFormat("dd/MM", Locale.ENGLISH)
         date.text = df.format(order.getDate("deliveryDate"))
 
 
-        val paid = mConvertView!!.findViewById(R.id.paid) as CheckBox
+        val paid = mConvertView.findViewById(R.id.paid) as CheckBox
         paid.isChecked = order.getBoolean("paid")
         paid.setOnClickListener {
-            _ -> db!!.save(order.toMutable().setBoolean("paid", paid.isChecked))
+            _ ->
+            db!!.save(order.toMutable().setBoolean("paid", paid.isChecked))
         }
 
-        val delivered = mConvertView!!.findViewById(R.id.delivered) as CheckBox
+        val delivered = mConvertView.findViewById(R.id.delivered) as CheckBox
         delivered.isChecked = order.getBoolean("delivered")
         delivered.setOnClickListener {
-            _ -> db!!.save(order.toMutable().setBoolean("delivered", delivered.isChecked))
+            _ -> db.save(order.toMutable().setBoolean("delivered", delivered.isChecked))
         }
-
-        /*
-        val countText = mConvertView.findViewById(R.id.task_count)
-        if (incompCounts[order.id] != null) {
-            countText.setText((incompCounts[order.id] as Int).toString())
-        } else {
-            countText.setText("")
-        }*/
 
         Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, order.id, order.getString("name"), order.getValue("name"), order.toMap())
         return mConvertView
@@ -97,19 +81,82 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
         return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("order")))
-                .orderBy(Ordering.property("name").ascending())
+                .orderBy(Ordering.property("deliveryDate").ascending())
     }
 
-    private fun incompTasksCountQuery(): Query {
-        val exprType = Expression.property("type")
-        val exprComplete = Expression.property("complete")
-        val exprTaskListId = Expression.property("taskList.id")
-        val srTaskListID = SelectResult.expression(exprTaskListId)
-        val srCount = SelectResult.expression(Function.count(Expression.all()))
-        return QueryBuilder.select(srTaskListID, srCount)
+    private fun ordersQuery(query: CharSequence): Query {
+        return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
-                .where(exprType.equalTo(Expression.string("parcel")).and(exprComplete.equalTo(Expression.booleanValue(false))))
-                .groupBy(exprTaskListId)
+                .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("client").like(Expression.string(query.toString()))))
+                .orderBy(Ordering.property("deliveryDate").ascending())
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+
+            override fun publishResults(constraint: CharSequence, results: FilterResults) {
+
+                arrayList = results.values as ArrayList<String>? // has the filtered values
+                clear()
+                /*for (i in arrayList!!)
+                    add(i)*/
+                val queryResults = ordersQuery(constraint).execute()
+                for (rs in queryResults)
+                    add(rs.getString(0))
+                notifyDataSetChanged()  // notifies the data with new filtered values
+            }
+
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                /*
+                var constraint = constraint
+                var results = FilterResults()        // Holds the results of a filtering operation in values
+                val filteredArrList = ArrayList<String>()
+
+                if (mOriginalValues == null) {
+                    mOriginalValues = ArrayList()
+                    for (i in 0 until count) mOriginalValues!!.add(getItem(i))
+
+                    //mOriginalValues = ArrayList<String>(arrayList) // saves the original data in mOriginalValues
+                    //clear()
+                }
+
+                /********
+                 *
+                 * If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
+                 * else does the Filtering and returns FilteredArrList(Filtered)
+                 *
+                 */
+                if (constraint == null || constraint.isEmpty()) {
+
+                    // set the Original result to return
+                    results.count = mOriginalValues!!.size
+                    results.values = mOriginalValues
+                }
+                else {
+                    constraint = constraint.toString().toLowerCase()
+                    for (i in 0 until mOriginalValues!!.size) {
+                        val data = mOriginalValues!![i]
+                        if (data.toLowerCase().startsWith(constraint.toString())) {
+                            filteredArrList.add(data)
+                            //add(data)
+                        }
+                    }
+                    // set the Filtered result to return
+                    results.count = filteredArrList.size
+                    results.values = filteredArrList
+                }*/
+                return FilterResults()
+            }
+        }
+    }
+
+    fun clearFilter() {
+        clear()
+        val queryResults = ordersQuery().execute()
+        for (rs in queryResults)
+            add(rs.getString(0))
+        notifyDataSetChanged()  // notifies the data with new filtered values
     }
 
     companion object {

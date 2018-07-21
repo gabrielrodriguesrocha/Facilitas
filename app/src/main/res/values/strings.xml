@@ -2,6 +2,7 @@
     <string name="app_name">Facilitas</string>
     <string name="order">Encomenda</string>
     <string name="action_settings">Configurações</string>
+    <string name="action_summary">Resumo de Vendas</string>
     <string name="search">Buscar</string>
     <string name="orders">Encomendas</string>
     <string name="product">Produto</string>
@@ -21,7 +22,7 @@
     <string name="delivery">Entrega</string>
     <string name="day">Dia</string>
     <string name="time">Horário</string>
-    <string name="priceAmount">R\$ %1$.2lf</string>
+    <string name="priceAmount">R\$ %1$.2f</string>
     <string name="add_product">Adicionar Produto</string>
 
     <string name="auth_code_signin_button">Sign in with Auth Code Flow</string>

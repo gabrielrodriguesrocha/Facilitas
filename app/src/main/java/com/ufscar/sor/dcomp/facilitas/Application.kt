@@ -20,6 +20,10 @@ import java.net.URISyntaxException
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.ufscar.sor.dcomp.facilitas.activity.MainActivity
 import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
+import android.preference.PreferenceManager
+import android.content.SharedPreferences
+
+
 
 class Application : android.app.Application(), ReplicatorChangeListener {
 
@@ -32,8 +36,16 @@ class Application : android.app.Application(), ReplicatorChangeListener {
     private val backup: Database? = null
     private val backupReplicator: Replicator? = null
 
+    private var singleton: Application? = null
+
+    fun getInstance(): Application? {
+        return singleton
+    }
+
     override fun onCreate() {
         super.onCreate()
+
+        singleton = this
 
         startSession("test", "123456")
     }
@@ -160,7 +172,7 @@ class Application : android.app.Application(), ReplicatorChangeListener {
 
     companion object {
 
-        private val TAG = Application::class.java.simpleName
+        internal val TAG = Application::class.java.simpleName
 
         private val SYNC_ENABLED = true
 

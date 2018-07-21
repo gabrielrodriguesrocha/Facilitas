@@ -46,14 +46,14 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
         mDoc.setBoolean("paid", false)
         // TODO change to join
         mDoc.setDictionary("products", products)
-        try {
+        return try {
             db.save(mDoc)
-            return db.getDocument(mDoc.id)
+            db.getDocument(mDoc.id)
         }
         catch (e: CouchbaseLiteException) {
             Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
             //TODO: Error handling
-            return null
+            null
         }
 
     }

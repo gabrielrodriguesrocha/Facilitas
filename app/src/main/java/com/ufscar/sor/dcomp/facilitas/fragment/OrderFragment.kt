@@ -1,13 +1,9 @@
 package com.ufscar.sor.dcomp.facilitas.fragment
 
 import android.os.Bundle
-import android.view.ViewGroup
-import android.view.LayoutInflater
 import android.support.v4.app.Fragment
-import android.view.View
 import android.content.Intent
 import android.support.design.widget.FloatingActionButton
-import android.view.MenuItem
 import android.widget.*
 
 import com.couchbase.lite.Database
@@ -15,12 +11,15 @@ import com.couchbase.lite.Document
 import com.couchbase.lite.internal.support.Log
 
 import android.app.DatePickerDialog
+import android.view.*
 import com.ufscar.sor.dcomp.facilitas.Application
 import com.ufscar.sor.dcomp.facilitas.activity.OrderDetailActivity
 import com.ufscar.sor.dcomp.facilitas.R
 import com.ufscar.sor.dcomp.facilitas.activity.InputOrderActivity
+import com.ufscar.sor.dcomp.facilitas.adapter.CustomFragmentPagerAdapter
 import com.ufscar.sor.dcomp.facilitas.adapter.OrderAdapter
 import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
+
 
 // This fragment displays all
 class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
@@ -33,12 +32,17 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private var mPage: Int = 0
 
+    private var query: String = ""
+
+    private var listView: ListView? = null
+
     private var orderCRUD: DatabaseCRUD? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPage = arguments!!.getInt(ARG_PAGE)
         orderCRUD = (activity!!.application as Application).getCrud()
+        setHasOptionsMenu(true)
 
     }
 
@@ -46,18 +50,18 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                               savedInstanceState: Bundle?): View {
 
         val fragmentView = inflater.inflate(R.layout.order_fragment, container, false)
-        val listView = fragmentView.findViewById(R.id.order_list) as ListView?
+        listView = fragmentView.findViewById(R.id.order_list) as ListView?
         val adapter = OrderAdapter(activity!!, orderCRUD!!.db)
         listView!!.adapter = adapter
-        listView.itemsCanFocus = true
+        listView!!.itemsCanFocus = true
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
+        listView!!.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             val id = adapter.getItem(i)
             val order = orderCRUD!!.readOrder(id) ?: throw IllegalArgumentException()
             showOrderDetail(order)
         }
 
-        listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, view, pos, _ ->
+        listView!!.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, view, pos, _ ->
             val popup = PopupMenu(this@OrderFragment.context, view)
             popup.inflate(R.menu.parcel_item)
             popup.setOnMenuItemClickListener { item ->
@@ -70,9 +74,29 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
 
         val button = fragmentView!!.findViewById(R.id.fab_order) as FloatingActionButton?
-        button!!.setOnClickListener({ displayCreateDialog() })
+        button!!.setOnClickListener { displayCreateDialog() }
 
         return fragmentView
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                searchView.clearFocus()
+                (listView!!.adapter as OrderAdapter).filter.filter(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+        })
+        searchView.setOnCloseListener {
+            (listView!!.adapter as OrderAdapter).clearFilter()
+            false
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun handleOrderPopupAction(item: MenuItem, order: Document): Boolean {
