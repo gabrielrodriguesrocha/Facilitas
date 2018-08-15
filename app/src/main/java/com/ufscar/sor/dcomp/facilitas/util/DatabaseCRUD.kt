@@ -49,6 +49,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
         mDoc.setDouble("discount", discount)
         mDoc.setString("owner", username)
         mDoc.setDate("deliveryDate", deliveryDate)
+        mDoc.setInt("deliveryYear", deliveryDate.year)
         mDoc.setInt("deliveryMonth", deliveryDate.month+1)
         mDoc.setInt("deliveryHour", deliveryTime.first)
         mDoc.setInt("deliveryMinute", deliveryTime.second)

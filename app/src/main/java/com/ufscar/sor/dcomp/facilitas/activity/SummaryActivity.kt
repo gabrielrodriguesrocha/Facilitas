@@ -1,7 +1,9 @@
 package com.ufscar.sor.dcomp.facilitas.activity
 
 import android.app.PendingIntent.getActivity
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
@@ -25,10 +27,14 @@ import java.lang.IllegalStateException
 class SummaryActivity : AppCompatActivity() {
     private var db : Database? = null
     private var databaseCRUD : DatabaseCRUD? = null
+    private var settings: SharedPreferences? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_summary)
+
+        settings = PreferenceManager.getDefaultSharedPreferences(this)
 
         db = (application as Application).getDatabase() ?: throw IllegalStateException()
         databaseCRUD = (application as Application).getCrud() ?: throw IllegalStateException()
@@ -49,10 +55,10 @@ class SummaryActivity : AppCompatActivity() {
         ySum.text = yearlySum().toString()
 
         val mClient = findViewById<TextView>(R.id.monthlyClient)
-        mClient.text = monthlyClient()
+        mClient.text = monthlyClient() ?: ""
 
         val yClient = findViewById<TextView>(R.id.yearlyClient)
-        yClient.text = yearlyClient()
+        yClient.text = yearlyClient() ?: ""
     }
 
     private fun ordersPerMonth(): Query {
@@ -60,9 +66,10 @@ class SummaryActivity : AppCompatActivity() {
                                     SelectResult.property("products"),
                                     SelectResult.property("deliveryDate"))
                 .from(DataSource.database(db))
-                .where(Expression.property("type").equalTo(Expression.string("order")).and(
-                        Expression.property("paid").equalTo(Expression.booleanValue(true))
-                ))
+                .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
+                        .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
+                        .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
                 .groupBy(Expression.property("deliveryMonth"))
                 .orderBy(Ordering.property("deliveryDate").ascending())
     }
@@ -71,6 +78,7 @@ class SummaryActivity : AppCompatActivity() {
         val query = QueryBuilder.select(SelectResult.expression(Function.sum(Expression.property("orderPrice"))))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
                         .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear))))
         return query.execute().next().getDouble(0)
@@ -80,35 +88,38 @@ class SummaryActivity : AppCompatActivity() {
         val query = QueryBuilder.select(SelectResult.expression(Function.sum(Expression.property("orderPrice"))))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
-                        .and(Expression.property("deliveryDate").lessThanOrEqualTo(Expression.date(LocalDate().plusYears(1).year().localDate.toDate()))))
+                        .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
         return query.execute().next().getDouble(0)
     }
 
-    private fun monthlyClient(): String {
+    private fun monthlyClient(): String? {
         val query = QueryBuilder.select(SelectResult.property("client"),
                                         SelectResult.expression(Function.sum(Expression.property("orderPrice"))).`as`("price"))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
                         .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear))))
                 .groupBy(Expression.property("client"))
                 .orderBy(Ordering.property("price"))
                 .limit(Expression.intValue(1))
-        return query.execute().next().getString("client")
+        return query.execute().next()?.getString("client")
     }
 
-    private fun yearlyClient(): String {
+    private fun yearlyClient(): String? {
         val query = QueryBuilder.select(SelectResult.property("client"),
                 SelectResult.expression(Function.sum(Expression.property("orderPrice"))).`as`("price"))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
-                        .and(Expression.property("deliveryDate").lessThanOrEqualTo(Expression.date(LocalDate().plusYears(1).year().localDate.toDate()))))
+                        .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
                 .groupBy(Expression.property("client"))
                 .orderBy(Ordering.property("price"))
                 .limit(Expression.intValue(1))
-        return query.execute().next().getString("client")
+        return query.execute().next()?.getString("client")
     }
 
     private fun monthlySeries() : LineGraphSeries<DataPoint> {
