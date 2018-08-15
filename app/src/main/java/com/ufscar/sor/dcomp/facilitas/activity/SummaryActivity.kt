@@ -80,7 +80,8 @@ class SummaryActivity : AppCompatActivity() {
                 .where(Expression.property("type").equalTo(Expression.string("order"))
                         .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
-                        .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear))))
+                        .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear)))
+                        .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
         return query.execute().next().getDouble(0)
     }
 
@@ -101,7 +102,8 @@ class SummaryActivity : AppCompatActivity() {
                 .where(Expression.property("type").equalTo(Expression.string("order"))
                         .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
-                        .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear))))
+                        .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear)))
+                        .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
                 .groupBy(Expression.property("client"))
                 .orderBy(Ordering.property("price"))
                 .limit(Expression.intValue(1))

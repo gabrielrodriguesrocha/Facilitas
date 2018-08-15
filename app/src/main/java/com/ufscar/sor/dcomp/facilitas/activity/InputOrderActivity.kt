@@ -149,8 +149,8 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
             discount.setText(order.getDouble("discount").toString())
 
             datePickerDialog = DatePickerDialog(
-                    this, this@InputOrderActivity, order.getDate("deliveryDate").year,
-                    order.getDate("deliveryDate").month, order.getDate("deliveryDate").day)
+                    this, this@InputOrderActivity, order.getInt("deliveryYear"),
+                    order.getInt("deliveryMonth")-1, order.getInt("deliveryDay"))
 
             timePickerDialog = TimePickerDialog(
                     this, mTimeSetListener, order.getInt("deliveryHour"),
@@ -276,8 +276,8 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
 
         if (discount.text.toString() == "") discount.text = "0.0"
         when {
-            intent.getBooleanExtra(OrderFragment.INTENT_EDIT, false) -> orderCRUD!!.saveOrder(client!!, date.toDate(), deliveryTime!!, productIDs, group, discount = discount.text.toString().toDouble(), id = intent.getStringExtra(OrderFragment.INTENT_ORDER_ID))
-            else -> orderCRUD!!.saveOrder(client!!, date.toDate(), deliveryTime!!, productIDs, group, discount.text.toString().toDouble())
+            intent.getBooleanExtra(OrderFragment.INTENT_EDIT, false) -> orderCRUD!!.saveOrder(client!!, date, deliveryTime!!, productIDs, group, discount = discount.text.toString().toDouble(), id = intent.getStringExtra(OrderFragment.INTENT_ORDER_ID))
+            else -> orderCRUD!!.saveOrder(client!!, date, deliveryTime!!, productIDs, group, discount.text.toString().toDouble())
         }
         finish()
     }

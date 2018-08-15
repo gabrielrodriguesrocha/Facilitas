@@ -60,14 +60,15 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
         paid.isChecked = order.getBoolean("paid")
         paid.setOnClickListener { _ ->
             val price = orderPrice(id)
-            db.save(order.toMutable().setBoolean("paid", paid.isChecked).setDouble("orderPrice", price))
+            val currentOrder = db.getDocument(id)
+            db.save(currentOrder.toMutable().setBoolean("paid", paid.isChecked).setDouble("orderPrice", price))
         }
 
         val delivered = mConvertView.findViewById(R.id.delivered) as CheckBox
         delivered.isChecked = order.getBoolean("delivered")
         delivered.setOnClickListener { _ ->
-
-            db.save(order.toMutable().setBoolean("delivered", delivered.isChecked))
+            val currentOrder = db.getDocument(id)
+            db.save(currentOrder.toMutable().setBoolean("delivered", delivered.isChecked))
         }
 
         Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, order.id, order.getString("name"), order.getValue("name"), order.toMap())

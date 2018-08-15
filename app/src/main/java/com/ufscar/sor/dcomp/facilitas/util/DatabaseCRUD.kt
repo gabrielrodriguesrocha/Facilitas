@@ -4,6 +4,7 @@ import android.preference.PreferenceManager
 import com.couchbase.lite.*
 import com.couchbase.lite.Dictionary
 import com.couchbase.lite.internal.support.Log
+import org.joda.time.LocalDate
 import java.util.*
 
 // -------------------------
@@ -38,7 +39,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
     // -------------------------
 
     // save order
-    fun saveOrder(client: ContactProjection, deliveryDate: Date, deliveryTime: Pair<Int, Int>, products: MutableMap<String, Double>, group: String, discount: Double = 0.0, id: String = "update"): Document? {
+    fun saveOrder(client: ContactProjection, deliveryDate: LocalDate, deliveryTime: Pair<Int, Int>, products: MutableMap<String, Double>, group: String, discount: Double = 0.0, id: String = "update"): Document? {
         val docId = if (id != "update") id else username + "." + UUID.randomUUID()
         val mDoc = MutableDocument(docId)
         mDoc.setString("type", "order")
@@ -48,9 +49,10 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
             mDoc.setString("phone", client.phone)
         mDoc.setDouble("discount", discount)
         mDoc.setString("owner", username)
-        mDoc.setDate("deliveryDate", deliveryDate)
+        mDoc.setDate("deliveryDate", deliveryDate.toDate())
         mDoc.setInt("deliveryYear", deliveryDate.year)
-        mDoc.setInt("deliveryMonth", deliveryDate.month+1)
+        mDoc.setInt("deliveryMonth", deliveryDate.monthOfYear)
+        mDoc.setInt("deliveryDay", deliveryDate.dayOfMonth)
         mDoc.setInt("deliveryHour", deliveryTime.first)
         mDoc.setInt("deliveryMinute", deliveryTime.second)
         mDoc.setBoolean("delivered", false)
