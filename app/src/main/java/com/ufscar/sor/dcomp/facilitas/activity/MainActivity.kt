@@ -1,5 +1,7 @@
 package com.ufscar.sor.dcomp.facilitas.activity
 
+import android.Manifest
+import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -16,16 +18,26 @@ import android.app.SearchManager
 import android.support.v4.view.MenuItemCompat.getActionView
 import android.widget.SearchView
 import com.ufscar.sor.dcomp.facilitas.fragment.OrderFragment
+import android.widget.ArrayAdapter
+import android.content.pm.PackageManager
+import android.os.Build
+
+
 
 
 class MainActivity : AppCompatActivity() {
 
     var viewPager: ViewPager? = null
     var position: Int = 0
+    private var PERMISSIONS_REQUEST_READ_CONTACTS = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), PERMISSIONS_REQUEST_READ_CONTACTS)
+        }
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = findViewById<View>(R.id.viewpager) as ViewPager
@@ -70,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent, 1)
                 true
             }
             R.id.action_summary -> {
@@ -85,5 +97,12 @@ class MainActivity : AppCompatActivity() {
     override fun onSearchRequested(): Boolean {
         Toast.makeText(applicationContext, "Search!", Toast.LENGTH_LONG).show()
         return super.onSearchRequested()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            (viewPager!!.adapter!! as CustomFragmentPagerAdapter).refresh()
+        }
     }
 }

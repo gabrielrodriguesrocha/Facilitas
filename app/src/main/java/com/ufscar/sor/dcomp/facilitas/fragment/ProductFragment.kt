@@ -12,7 +12,6 @@ import com.ufscar.sor.dcomp.facilitas.Application
 import com.ufscar.sor.dcomp.facilitas.activity.ProductDetailActivity
 import com.ufscar.sor.dcomp.facilitas.R
 import com.ufscar.sor.dcomp.facilitas.activity.InputProductActivity
-import com.ufscar.sor.dcomp.facilitas.adapter.OrderAdapter
 import com.ufscar.sor.dcomp.facilitas.adapter.ProductAdapter
 import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 
@@ -82,7 +81,7 @@ class ProductFragment : Fragment() {
             }
         })
         searchView.setOnCloseListener {
-            (listView!!.adapter as ProductAdapter).clearFilter()
+            (listView!!.adapter as ProductAdapter).refresh()
             false
         }
         super.onCreateOptionsMenu(menu, inflater)
@@ -135,6 +134,10 @@ class ProductFragment : Fragment() {
         intent.putExtra(INTENT_EDIT, true)
         intent.putExtra(INTENT_PRODUCT_ID, product.id)
         startActivity(intent)
+    }
+
+    fun refresh() {
+        (listView!!.adapter as ProductAdapter).refresh()
     }
 
     companion object {

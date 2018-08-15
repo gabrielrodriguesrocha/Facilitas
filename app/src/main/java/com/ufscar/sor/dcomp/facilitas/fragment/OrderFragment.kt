@@ -16,7 +16,6 @@ import com.ufscar.sor.dcomp.facilitas.Application
 import com.ufscar.sor.dcomp.facilitas.activity.OrderDetailActivity
 import com.ufscar.sor.dcomp.facilitas.R
 import com.ufscar.sor.dcomp.facilitas.activity.InputOrderActivity
-import com.ufscar.sor.dcomp.facilitas.adapter.CustomFragmentPagerAdapter
 import com.ufscar.sor.dcomp.facilitas.adapter.OrderAdapter
 import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 
@@ -93,7 +92,7 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             }
         })
         searchView.setOnCloseListener {
-            (listView!!.adapter as OrderAdapter).clearFilter()
+            (listView!!.adapter as OrderAdapter).refresh()
             false
         }
         super.onCreateOptionsMenu(menu, inflater)
@@ -149,6 +148,10 @@ class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         intent.putExtra(INTENT_EDIT, true)
         intent.putExtra(INTENT_ORDER_ID, order.id)
         startActivity(intent)
+    }
+
+    fun refresh() {
+        (listView!!.adapter as OrderAdapter).refresh()
     }
 
     companion object {

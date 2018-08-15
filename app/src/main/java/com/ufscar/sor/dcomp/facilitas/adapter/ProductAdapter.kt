@@ -1,6 +1,7 @@
 package com.ufscar.sor.dcomp.facilitas.adapter
 
 import android.content.Context
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import com.ufscar.sor.dcomp.facilitas.R
 class ProductAdapter(context: Context, private val db: Database?) : ArrayAdapter<String>(context, 0) {
     private var productsQuery: Query? = null
     private var suggestions: ArrayList<String>? = null
+    private val settings = PreferenceManager.getDefaultSharedPreferences(context)
+
 
     init {
 
@@ -54,14 +57,17 @@ class ProductAdapter(context: Context, private val db: Database?) : ArrayAdapter
     private fun productsQuery(): Query {
         return QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Expression.property("name")))
                 .from(DataSource.database(db))
-                .where(Expression.property("type").equalTo(Expression.string("product")))
+                .where(Expression.property("type").equalTo(Expression.string("product"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings.getString("databaseGroup", "test")))))
                 .orderBy(Ordering.property("name").ascending())
     }
 
     private fun productsQuery(query: CharSequence): Query {
+        //val ftsExpression = FullTextExpression.index("default")
         return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("product"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings.getString("databaseGroup", "test"))))
                         .and(Expression.property("name").like(Expression.string(query.toString()))))
                 .orderBy(Ordering.property("name").ascending())
     }
@@ -125,7 +131,7 @@ class ProductAdapter(context: Context, private val db: Database?) : ArrayAdapter
         }
     }
 
-    fun clearFilter() {
+    fun refresh() {
         clear()
         val queryResults = productsQuery().execute()
         for (rs in queryResults)

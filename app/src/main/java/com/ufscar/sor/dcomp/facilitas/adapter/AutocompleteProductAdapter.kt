@@ -1,6 +1,7 @@
 package com.ufscar.sor.dcomp.facilitas.adapter
 
 import android.content.Context
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,8 @@ class AutocompleteProductAdapter(context: Context, private val db: Database?, pr
     private var productsQuery: Query? = null
     private var mProducts: List<Result>? = null
     private var suggestions: ArrayList<Result>? = null
+    private val settings = PreferenceManager.getDefaultSharedPreferences(context)
+
 
     init {
 
@@ -96,9 +99,12 @@ class AutocompleteProductAdapter(context: Context, private val db: Database?, pr
     }
 
     private fun productsQuery(): Query {
-        return QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Expression.property("name")))
+        return QueryBuilder.select(SelectResult.expression(Meta.id),
+                                   SelectResult.expression(Expression.property("name")),
+                                   SelectResult.expression(Expression.property("price")))
                 .from(DataSource.database(db))
-                .where(Expression.property("type").equalTo(Expression.string("product")))
+                .where(Expression.property("type").equalTo(Expression.string("product"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings.getString("databaseGroup", "test")))))
                 .orderBy(Ordering.property("name").ascending())
     }
 

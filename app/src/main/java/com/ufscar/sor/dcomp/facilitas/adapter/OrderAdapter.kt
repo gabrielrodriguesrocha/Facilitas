@@ -1,21 +1,16 @@
 package com.ufscar.sor.dcomp.facilitas.adapter
 
 import android.content.Context
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.couchbase.lite.*
 
-import com.couchbase.lite.DataSource
-import com.couchbase.lite.Database
-import com.couchbase.lite.Expression
-import com.couchbase.lite.Meta
-import com.couchbase.lite.Ordering
-import com.couchbase.lite.Query
-import com.couchbase.lite.QueryBuilder
-import com.couchbase.lite.SelectResult
 import com.couchbase.lite.internal.support.Log
 import com.ufscar.sor.dcomp.facilitas.R
+import org.joda.time.LocalDate
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -25,6 +20,7 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
     private var ordersQuery: Query? = null
     private var incompTasksCountQuery: Query? = null
     private val incompCounts = HashMap<String, Int>()
+    private val settings = PreferenceManager.getDefaultSharedPreferences(context)
 
     private var arrayList: ArrayList<String>? = ArrayList()
     private var mOriginalValues: ArrayList<String>? = null // Original Values
@@ -62,15 +58,16 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
 
         val paid = mConvertView.findViewById(R.id.paid) as CheckBox
         paid.isChecked = order.getBoolean("paid")
-        paid.setOnClickListener {
-            _ ->
-            db!!.save(order.toMutable().setBoolean("paid", paid.isChecked))
+        paid.setOnClickListener { _ ->
+            val price = orderPrice(id)
+            db.save(order.toMutable().setBoolean("paid", paid.isChecked).setDouble("orderPrice", price))
         }
 
         val delivered = mConvertView.findViewById(R.id.delivered) as CheckBox
         delivered.isChecked = order.getBoolean("delivered")
-        delivered.setOnClickListener {
-            _ -> db.save(order.toMutable().setBoolean("delivered", delivered.isChecked))
+        delivered.setOnClickListener { _ ->
+
+            db.save(order.toMutable().setBoolean("delivered", delivered.isChecked))
         }
 
         Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, order.id, order.getString("name"), order.getValue("name"), order.toMap())
@@ -78,18 +75,33 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
     }
 
     private fun ordersQuery(): Query {
+        val date = LocalDate().toDate()
         return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
-                .where(Expression.property("type").equalTo(Expression.string("order")))
+                .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings.getString("databaseGroup", "test"))))
+                        .and(Expression.property("deliveryDate").greaterThanOrEqualTo(Expression.date(date))))
                 .orderBy(Ordering.property("deliveryDate").ascending())
     }
 
     private fun ordersQuery(query: CharSequence): Query {
+        //val ftsExpression = FullTextExpression.index("default")
         return QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(db))
                 .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings.getString("databaseGroup", "test"))))
                         .and(Expression.property("client").like(Expression.string(query.toString()))))
                 .orderBy(Ordering.property("deliveryDate").ascending())
+    }
+
+    private fun orderPrice(id: String): Double {
+        val order = db!!.getDocument(id)
+        val products = order.getDictionary("products")
+        val discount = order.getDouble("discount")
+        var price = 0.0
+        products.forEach { v-> price += db.getDocument(v).getDouble("price") * products.getDouble(v) }
+        price -= discount
+        return price
     }
 
     override fun getFilter(): Filter {
@@ -97,7 +109,7 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
 
-                arrayList = results.values as ArrayList<String>? // has the filtered values
+                //arrayList = results.values as ArrayList<String>? // has the filtered values
                 clear()
                 /*for (i in arrayList!!)
                     add(i)*/
@@ -151,7 +163,7 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
         }
     }
 
-    fun clearFilter() {
+    fun refresh() {
         clear()
         val queryResults = ordersQuery().execute()
         for (rs in queryResults)

@@ -30,4 +30,9 @@ class CustomFragmentPagerAdapter(fm: FragmentManager, private val context: Conte
         // Generate title based on item position
         return tabTitles[position]
     }
+
+    fun refresh() {
+        orderFragment.refresh()
+        productFragment.refresh()
+    }
 }

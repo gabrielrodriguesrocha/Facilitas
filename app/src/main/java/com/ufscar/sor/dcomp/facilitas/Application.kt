@@ -22,14 +22,19 @@ import com.ufscar.sor.dcomp.facilitas.activity.MainActivity
 import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
-
+import android.preference.PreferenceManager.getDefaultSharedPreferences
+import net.danlew.android.joda.JodaTimeAndroid
 
 
 class Application : android.app.Application(), ReplicatorChangeListener {
 
+    private var DATABASE_NAME: String = DEFAULT_DATABASE_NAME
+    private var SYNCGATEWAY_URL: String = DEFAULT_SYNCGATEWAY_URL
+    private var SYNC_ENABLED: Boolean = true
+
     private var database: Database? = null
     private var replicator: Replicator? = null
-    private var username: String? = DATABASE_NAME
+    private var username: String? = DEFAULT_DATABASE_NAME
 
     private var databaseCRUD: DatabaseCRUD? = null
 
@@ -38,12 +43,18 @@ class Application : android.app.Application(), ReplicatorChangeListener {
 
     private var singleton: Application? = null
 
-    fun getInstance(): Application? {
-        return singleton
-    }
+
 
     override fun onCreate() {
         super.onCreate()
+
+        val settings = getDefaultSharedPreferences(this)
+
+        JodaTimeAndroid.init(this)
+
+        DATABASE_NAME = settings.getString("databaseName", DATABASE_NAME)
+        SYNCGATEWAY_URL = settings.getString("sgUrl", SYNCGATEWAY_URL)
+        SYNC_ENABLED = settings.getBoolean("syncEnabled", SYNC_ENABLED)
 
         singleton = this
 
@@ -124,13 +135,14 @@ class Application : android.app.Application(), ReplicatorChangeListener {
     // Replicator operation
     // -------------------------
     private fun startReplication(username: String?, password: String?) {
-        if (!SYNC_ENABLED) return
+        //if (!SYNC_ENABLED) return
 
         val uri: URI
         try {
-            uri = URI(SYNCGATEWAY_URL)
+            //TODO FIX
+            uri = URI(DEFAULT_SYNCGATEWAY_URL)
         } catch (e: URISyntaxException) {
-            Log.e(TAG, "Failed parse URI: %s", e, SYNCGATEWAY_URL)
+            Log.e(TAG, "Failed parse URI: %s", e, DEFAULT_SYNCGATEWAY_URL)
             return
         }
 
@@ -149,7 +161,7 @@ class Application : android.app.Application(), ReplicatorChangeListener {
     }
 
     private fun stopReplication() {
-        if (!SYNC_ENABLED) return
+        //if (!SYNC_ENABLED) return
 
         replicator!!.stop()
     }
@@ -174,9 +186,9 @@ class Application : android.app.Application(), ReplicatorChangeListener {
 
         internal val TAG = Application::class.java.simpleName
 
-        private val SYNC_ENABLED = true
+        private const val DEFAULT_SYNCGATEWAY_URL = "ws://ec2-18-231-198-169.sa-east-1.compute.amazonaws.com:4984/db/"
+        private const val DEFAULT_DATABASE_NAME = "db"
 
-        private val DATABASE_NAME = "db"
-        private val SYNCGATEWAY_URL = "ws://ec2-18-231-187-36.sa-east-1.compute.amazonaws.com:4984/db/"
+        private const val PREFS_NAME = "SETTINGS"
     }
 }
