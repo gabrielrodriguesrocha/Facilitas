@@ -51,6 +51,9 @@ class SummaryActivity : AppCompatActivity() {
         val mSum = findViewById<TextView>(R.id.monthlySum)
         mSum.text = monthlySum().toString()
 
+        val lmSum =findViewById<TextView>(R.id.lastMonthSum)
+        lmSum.text = lastMonthSum().toString()
+
         val ySum = findViewById<TextView>(R.id.yearlySum)
         ySum.text = yearlySum().toString()
 
@@ -81,6 +84,17 @@ class SummaryActivity : AppCompatActivity() {
                         .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
                         .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
                         .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().monthOfYear)))
+                        .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
+        return query.execute().next().getDouble(0)
+    }
+
+    private fun lastMonthSum(): Double {
+        val query = QueryBuilder.select(SelectResult.expression(Function.sum(Expression.property("orderPrice"))))
+                .from(DataSource.database(db))
+                .where(Expression.property("type").equalTo(Expression.string("order"))
+                        .and(Expression.property("group").equalTo(Expression.string(settings!!.getString("databaseGroup", "test"))))
+                        .and(Expression.property("paid").equalTo(Expression.booleanValue(true)))
+                        .and(Expression.property("deliveryMonth").equalTo(Expression.intValue(LocalDate().minusMonths(1).monthOfYear)))
                         .and(Expression.property("deliveryYear").equalTo(Expression.intValue(LocalDate().year))))
         return query.execute().next().getDouble(0)
     }
