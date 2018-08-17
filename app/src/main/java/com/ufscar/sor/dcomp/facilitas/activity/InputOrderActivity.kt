@@ -130,7 +130,7 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
                         price.text = (rowView.tag.toString().toDouble() * amount.text.toString().toDouble()).toString()
                         total += rowView.tag.toString().toDouble() * amount.text.toString().toDouble()
                         totalView!!.text = total.toString()
-                        Log.i(TAG, productIDs.toString())
+                        //Log.i(TAG, productIDs.toString())
                     }
                     amount.setOnFocusChangeListener { _, _ ->
                         if (rowView.tag != null) price.text = (rowView.tag.toString().toDouble() * amount.text.toString().toDouble()).toString()
@@ -164,9 +164,9 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
                     this, this@InputOrderActivity, getInstance().get(YEAR),
                     getInstance().get(MONTH), getInstance().get(DAY_OF_MONTH))
             timePickerDialog = TimePickerDialog(
-                    this, mTimeSetListener, getInstance().get(HOUR),
+                    this, mTimeSetListener, getInstance().get(HOUR_OF_DAY),
                     getInstance().get(MINUTE), true)
-            deliveryTime = Pair(getInstance().get(HOUR), getInstance().get(MINUTE))
+            deliveryTime = Pair(getInstance().get(HOUR_OF_DAY), getInstance().get(MINUTE))
         }
 
         calendarButton.setOnClickListener {
@@ -208,7 +208,7 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
             price.text = (rowView.tag.toString().toDouble() * amount.text.toString().toDouble()).toString()
             total += rowView.tag.toString().toDouble() * amount.text.toString().toDouble()
             totalView!!.text = total.toString()
-            Log.i(TAG, productIDs.toString())
+            //Log.i(TAG, productIDs.toString())
         }
         amount.setOnFocusChangeListener { _, _ ->
             if (rowView.tag != null) {
@@ -287,7 +287,7 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
     }
 
     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
-        Log.i(TAG, "Date changed!")
+        //Log.i(TAG, "Date changed!")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -301,9 +301,9 @@ class InputOrderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListen
             client.text = cursor.getString(name)
             client.tag = cursor.getString(phone)
 
-            for (i in cursor.columnNames) {
+            /*for (i in cursor.columnNames) {
                 Log.i(TAG, i)
-            }
+            }*/
             cursor.close()
         }
     }

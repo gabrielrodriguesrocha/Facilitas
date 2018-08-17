@@ -3,6 +3,7 @@
     <string name="order">Encomenda</string>
     <string name="action_settings">Configurações</string>
     <string name="action_summary">Resumo de Vendas</string>
+    <string name="action_about">Sobre</string>
     <string name="search">Buscar</string>
     <string name="orders">Encomendas</string>
     <string name="product">Produto</string>
@@ -28,4 +29,26 @@
     <string name="auth_code_signin_button">Sign in with Auth Code Flow</string>
 
     <string name="server_client_id">118833900567-snpjovf38167e4e3hcb129ch5817onlf.apps.googleusercontent.com</string>
+    <string name="group">Grupo:</string>
+    <string name="URL">URL:</string>
+    <string name="hide_orders">Esconder encomendas:</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="delivered">Entregues</string>
+    <string name="paid">Pagas</string>
+    <string name="signOff">Desconectar conta</string>
+    <string name="revokeAccess">Revogar acesso</string>
+    <string name="name">Nome</string>
+    <string name="placeholderProductName">Bolo...</string>
+    <string name="placeholderProductPrice">123.45</string>
+    <string name="category">Categoria</string>
+    <string name="optional">Opcional</string>
+    <string name="project_description">Facilitas foi desenvolvido por estudantes do curso Bacharelado em Ciência da Computação na Universidade Federal de São Carlos - Campus Sorocaba, em 2018.  Facilitas é um projeto de código aberto sem fins lucrativos.</string>
+    <string name="privacyPolicy">Política de Privacidade</string>
+    <string name="loading">Carregando...</string>
+    <string name="login">Login</string>
+    <string name="loginExplanation">Posteriormente mais formas de identificação serão adicionadas.</string>
+    <string name="loginJustification">Precisamos da sua conta do Google para identificação interna.</string>
+    <string name="facilitas">Facilitas</string>
+    <string name="logo">logo</string>
 </resources>

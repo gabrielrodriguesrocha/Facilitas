@@ -36,9 +36,11 @@ class OrderDetailActivity : AppCompatActivity() {
         val order = orderCRUD!!.readOrder(intent.getStringExtra(OrderFragment.INTENT_ORDER_ID)) ?: throw IllegalStateException()
 
         val client = findViewById<TextView>(R.id.client)
+        val clientPhoneText =findViewById<TextView>(R.id.phone)
         val clientName = order.getString("client")
         val clientPhone = order.getString("phone")
-        client.text = "$clientName ($clientPhone)"
+        client.text = clientName
+        clientPhoneText.text = clientPhone
 
         val date = findViewById<TextView>(R.id.date)
         val df = SimpleDateFormat("dd/MM", Locale.ENGLISH)

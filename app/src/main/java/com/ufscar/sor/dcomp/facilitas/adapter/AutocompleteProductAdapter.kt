@@ -46,7 +46,7 @@ class AutocompleteProductAdapter(context: Context, private val db: Database?, pr
         val text = mConvertView!!.findViewById(android.R.id.text1) as TextView
         text.text = product.getString("name")
 
-        Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, product.getString("id"), product.getString("name"), product.getValue("name"), product.toMap())
+        //Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, product.getString("id"), product.getString("name"), product.getValue("name"), product.toMap())
         return mConvertView
     }
 

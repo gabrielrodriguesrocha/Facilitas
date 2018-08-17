@@ -21,8 +21,20 @@ import com.ufscar.sor.dcomp.facilitas.fragment.OrderFragment
 import android.widget.ArrayAdapter
 import android.content.pm.PackageManager
 import android.os.Build
-
-
+import android.preference.PreferenceManager
+import com.couchbase.lite.Authenticator
+import com.couchbase.lite.internal.support.Log
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.gson.reflect.TypeToken
+import com.google.gson.Gson
+import com.ufscar.sor.dcomp.facilitas.Application
+import okhttp3.*
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,9 +42,12 @@ class MainActivity : AppCompatActivity() {
     var viewPager: ViewPager? = null
     var position: Int = 0
     private var PERMISSIONS_REQUEST_READ_CONTACTS = 100
+    private val httpClient = OkHttpClient()
+    private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -87,6 +102,11 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_summary -> {
                 val intent = Intent(this, SummaryActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_about -> {
+                val intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
                 true
             }

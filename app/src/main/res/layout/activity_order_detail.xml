@@ -20,8 +20,8 @@
         android:id="@+id/client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/clientTitle"
@@ -32,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/date"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,18 +42,19 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/dateTitle"
-        app:layout_constraintTop_toBottomOf="@+id/client" />
+        app:layout_constraintTop_toBottomOf="@+id/phone" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -65,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="16sp"
             android:text="Quantidade" />
 
         <TextView
@@ -73,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:textSize="16sp"
             android:text="Produto" />
 
         <TextView
@@ -81,22 +85,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
+            android:textSize="16sp"
             android:text="Subtotal" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/totalTitle"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/discountTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <LinearLayout
             android:id="@+id/order_products"
@@ -148,5 +151,15 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/totalTitle"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="TextView"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/clientTitle"
+        app:layout_constraintTop_toBottomOf="@+id/client" />
 
 </android.support.constraint.ConstraintLayout>

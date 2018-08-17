@@ -50,7 +50,7 @@ class ProductAdapter(context: Context, private val db: Database?) : ArrayAdapter
         text.text = product.getString("name")
         price.text = context.resources.getString(R.string.priceAmount, product.getDouble("price"))
 
-        Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, product.id, product.getString("name"), product.getValue("name"), product.toMap())
+        //Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, product.id, product.getString("name"), product.getValue("name"), product.toMap())
         return mConvertView
     }
 

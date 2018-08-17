@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="Nome"
+        android:text="@string/name"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="Bolo..."
+        android:hint="@string/placeholderProductName"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameTitle" />
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
-        android:text="Preço"
+        android:text="@string/price"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
@@ -47,7 +47,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="123.45"
+        android:hint="@string/placeholderProductPrice"
         android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/priceTitle" />
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
-        android:text="Categoria"
+        android:text="@string/category"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price" />
@@ -70,7 +70,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="Opcional"
+        android:hint="@string/optional"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoryTitle" />
@@ -87,22 +87,23 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/cancel_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@android:color/holo_red_light"
+            android:text="@string/cancel"
+            android:textColor="@android:color/white" />
+
+        <Button
             android:id="@+id/add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="12dp"
             android:background="@android:color/holo_green_light"
-            android:text="OK"
+            android:text="@string/ok"
             android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/cancel_product"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_light"
-            android:text="Cancelar"
-            android:textColor="@android:color/white" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

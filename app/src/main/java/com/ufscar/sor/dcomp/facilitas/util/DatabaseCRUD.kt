@@ -67,7 +67,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
             db.getDocument(mDoc.id)
         }
         catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
+            //Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
             //TODO: Error handling
             null
         }
@@ -79,7 +79,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
             db.getDocument(id)
         }
         catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to retrieve the doc - %s", e, id)
+            //Log.e(TAG, "Failed to retrieve the doc - %s", e, id)
             //TODO: Error handling
             null
         }
@@ -90,7 +90,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
         try {
             db.delete(order)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to delete the doc - %s", e, order)
+            //Log.e(TAG, "Failed to delete the doc - %s", e, order)
             //TODO: Error handling
         }
 
@@ -107,7 +107,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
             db.getDocument(id)
         }
         catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to retrieve the doc - %s", e, id)
+            //Log.e(TAG, "Failed to retrieve the doc - %s", e, id)
             //TODO: Error handling
             null
         }
@@ -127,7 +127,7 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
             db.save(mDoc)
             db.getDocument(mDoc.id)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
+            //Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
             //TODO: Error handling
             null
         }
@@ -138,11 +138,39 @@ class DatabaseCRUD(private var _username: String, private var _db: Database) {
         try {
             db.delete(product)
         } catch (e: CouchbaseLiteException) {
-            Log.e(TAG, "Failed to delete the doc - %s", e, product)
+            //Log.e(TAG, "Failed to delete the doc - %s", e, product)
             //TODO: Error handling
         }
 
         return product
+    }
+
+    // -------------------------
+    // Authentication
+    // -------------------------
+
+    fun findAuthenticationId(name: String) : String? {
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id))
+                .from(DataSource.database(db))
+                .where(Expression.property("type").equalTo(Expression.string("auth"))
+                        .and(Expression.property("name").like(Expression.string(name))))
+                .limit(Expression.intValue(1))
+        return query.execute().next()?.getString("id")
+    }
+
+    fun saveAuthentication(docId: String? = null, name: String, group: String): Document? {
+        val mDoc = if (docId == null || docId == "") MutableDocument(username + "." + UUID.randomUUID()) else MutableDocument(docId)
+        mDoc.setString("group", "auth")
+        mDoc.setString("channels", group)
+        mDoc.setString("owner", name)
+        return try {
+            db.save(mDoc)
+            db.getDocument(mDoc.id)
+        } catch (e: CouchbaseLiteException) {
+            //Log.e(TAG, "Failed to save the doc - %s", e, mDoc)
+            //TODO: Error handling
+            null
+        }
     }
 
     companion object {

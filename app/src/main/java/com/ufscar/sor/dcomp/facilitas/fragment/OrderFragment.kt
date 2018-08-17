@@ -23,7 +23,7 @@ import com.ufscar.sor.dcomp.facilitas.util.DatabaseCRUD
 // This fragment displays all
 class OrderFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
-        Log.i(TAG, "Date changed!")
+        //Log.i(TAG, "Date changed!")
     }
 
     private var username: String? = null

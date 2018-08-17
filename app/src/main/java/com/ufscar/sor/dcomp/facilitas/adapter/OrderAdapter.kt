@@ -1,7 +1,13 @@
 package com.ufscar.sor.dcomp.facilitas.adapter
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.preference.PreferenceManager
+import android.support.v4.app.NotificationCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,9 +38,11 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
         this.ordersQuery = ordersQuery()
         this.ordersQuery!!.addChangeListener { change ->
             clear()
+            var newCount = 0
             val rs = change.results
             for (result in rs) {
                 add(result.getString(0))
+                newCount += 1
             }
             notifyDataSetChanged()
         }
@@ -71,7 +79,7 @@ class OrderAdapter(context: Context, private val db: Database?) : ArrayAdapter<S
             db.save(currentOrder.toMutable().setBoolean("delivered", delivered.isChecked))
         }
 
-        Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, order.id, order.getString("name"), order.getValue("name"), order.toMap())
+        //Log.e(TAG, "getView(): pos -> %d, docID -> %s, name -> %s, name2 -> %s, all -> %s", position, order.id, order.getString("name"), order.getValue("name"), order.toMap())
         return mConvertView
     }
 
